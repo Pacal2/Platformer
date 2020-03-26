@@ -1,2 +1,2 @@
 # Platformer
-Projekt WSEI
+Projekt WSEI w Unity

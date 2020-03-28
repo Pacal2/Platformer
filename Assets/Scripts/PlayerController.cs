@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
@@ -20,7 +21,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float speed = 7f;
     [SerializeField] private float jumpForce = 10f;
     [SerializeField] private int cherries = 0;
-    [SerializeField] private Text cherryScore;
+    [SerializeField] private TextMeshProUGUI cherryScore;
     [SerializeField] private float hurtForce = 10f;
     [SerializeField] private AudioSource cherry;
     [SerializeField] private AudioSource footstep;
@@ -51,6 +52,15 @@ public class PlayerController : MonoBehaviour
             Destroy(collision.gameObject);
             cherries += 1;
             cherryScore.text = cherries.ToString();
+        }
+
+        if (collision.tag == "Powerup")
+        {
+            jumpForce = 20f;
+            Destroy(collision.gameObject);
+            GetComponent<SpriteRenderer>().color = Color.yellow;
+            StartCoroutine(ResetPower());
+
         }
     }
 
@@ -155,5 +165,12 @@ public class PlayerController : MonoBehaviour
     private void FootStep()
     {
         footstep.Play();
+    }
+
+    private IEnumerator ResetPower()
+    {
+        yield return new WaitForSeconds(10);
+        jumpForce = 10;
+        GetComponent<SpriteRenderer>().color = Color.white;
     }
 }

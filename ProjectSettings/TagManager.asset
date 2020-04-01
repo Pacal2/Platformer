@@ -50,6 +50,9 @@ TagManager:
   - name: Background
     uniqueID: 2820353019
     locked: 0
+  - name: Background depth
+    uniqueID: 2530744287
+    locked: 0
   - name: Middle
     uniqueID: 3084810421
     locked: 0

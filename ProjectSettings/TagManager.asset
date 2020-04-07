@@ -53,12 +53,15 @@ TagManager:
   - name: Background depth
     uniqueID: 2530744287
     locked: 0
-  - name: Middle
+  - name: Back
+    uniqueID: 3340423451
+    locked: 0
+  - name: Foreground
+    uniqueID: 2540605811
+    locked: 0
+  - name: Front
     uniqueID: 3084810421
     locked: 0
   - name: Entity
     uniqueID: 298103985
-    locked: 0
-  - name: Foreground
-    uniqueID: 2540605811
     locked: 0

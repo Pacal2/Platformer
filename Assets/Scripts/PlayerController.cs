@@ -11,11 +11,16 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     private Animator anim;
     private Collider2D coll;
-    
+    private Collider2D attackColl;
+
 
     // Finite state machine
-    private enum State { idle, running, jumping, falling, hurt, climb };
+    private enum State { idle, running, jumping, falling, hurt, climb, attack };
     private State state = State.idle;
+
+    //Fighting
+    bool isAttacking = false;
+    [SerializeField] GameObject attackHitBox;
 
     //Ladder variables
     [HideInInspector] public bool canClimb = false;
@@ -39,8 +44,10 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         coll = GetComponent<Collider2D>();
+        attackColl = attackHitBox.GetComponent<Collider2D>();
         PermanentUI.perm.healthAmount.text = PermanentUI.perm.health.ToString();
         naturalGravity = rb.gravityScale;
+        attackHitBox.SetActive(false);
 
     }
 
@@ -53,6 +60,7 @@ public class PlayerController : MonoBehaviour
         if (state != State.hurt)
         {
             Movement();
+            Attack();
         }
         AnimationState();
         anim.SetInteger("state", (int)state); // Sets animation based on enumeratror state
@@ -66,6 +74,7 @@ public class PlayerController : MonoBehaviour
             Destroy(collision.gameObject);
             PermanentUI.perm.cherries += 1;
             PermanentUI.perm.cherryScore.text = PermanentUI.perm.cherries.ToString();
+            
         }
 
         if (collision.tag == "Powerup")
@@ -82,11 +91,11 @@ public class PlayerController : MonoBehaviour
     {
         if (other.gameObject.tag == "Enemy")
         {
-            if (state == State.falling)
+            if (state == State.attack)
             {
                 Enemy enemy = other.gameObject.GetComponent<Enemy>();
-                enemy.JumpedOn();
-                Jump();
+                //enemy.Attacked();
+                //Jump();
             }
             else
             {
@@ -143,7 +152,9 @@ public class PlayerController : MonoBehaviour
         {
             rb.velocity = new Vector2(speed, rb.velocity.y);
             transform.localScale = new Vector2(1, 1);
+           
         }
+        
         // Jumping
         if (Input.GetButtonDown("Jump") && coll.IsTouchingLayers(ground))
         {
@@ -160,11 +171,43 @@ public class PlayerController : MonoBehaviour
     {
         rb.velocity = new Vector2(rb.velocity.x, jumpForce);
         state = State.jumping;
+
+
     }
 
+    private void Attack()
+    {
+        if (Input.GetButtonDown("Fire3") && !isAttacking && coll.IsTouchingLayers(ground))
+        {
+            isAttacking = true;
+            state = State.attack;
+            
+        }
+    }
+
+    void ResetAttack()
+    {
+        isAttacking = false;
+        state = State.idle;
+    }
+
+    void attackHitboxOn()
+    {
+        attackHitBox.SetActive(true);
+    }
+
+    void attackHitboxOff()
+    {
+        attackHitBox.SetActive(false);
+    }
+    
     private void AnimationState()
     {
-        if (state == State.climb)
+        if (state == State.attack)
+        {
+
+        }
+        else if (state == State.climb)
         {
 
         }

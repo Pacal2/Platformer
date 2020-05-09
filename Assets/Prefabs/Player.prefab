@@ -161,7 +161,7 @@ Rigidbody2D:
   m_GravityScale: 3
   m_Material: {fileID: 0}
   m_Interpolate: 0
-  m_SleepingMode: 0
+  m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!61 &6698207341243794246
@@ -413,10 +413,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e709a5fb2d8e28a41bb9d9c3bf5a28e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  state: 0
   attackHitBox: {fileID: 452731585836070888}
   canClimb: 0
-  bottomLadder: 0
-  topLadder: 0
   climbSpeed: 3
   whatIsLadder:
     serializedVersion: 2

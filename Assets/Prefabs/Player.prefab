@@ -16,7 +16,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &183271141406074284
 Transform:
   m_ObjectHideFlags: 0
@@ -161,7 +161,7 @@ Rigidbody2D:
   m_GravityScale: 3
   m_Material: {fileID: 0}
   m_Interpolate: 0
-  m_SleepingMode: 1
+  m_SleepingMode: 0
   m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!61 &6698207341243794246
@@ -417,8 +417,11 @@ MonoBehaviour:
   canClimb: 0
   bottomLadder: 0
   topLadder: 0
-  ladder: {fileID: 0}
   climbSpeed: 3
+  whatIsLadder:
+    serializedVersion: 2
+    m_Bits: 512
+  distance: 0
   ground:
     serializedVersion: 2
     m_Bits: 256

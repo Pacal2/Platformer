@@ -23,12 +23,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject attackHitBox;
 
     //Ladder variables
-    [HideInInspector] public bool canClimb = false;
+    [HideInInspector] public bool canClimb;
     [HideInInspector] public bool bottomLadder = false;
     [HideInInspector] public bool topLadder = false;
-    public LadderController ladder;
     private float naturalGravity;
     [SerializeField] float climbSpeed = 3f;
+    [SerializeField] LayerMask whatIsLadder;
+    public float distance;
 
     // Inspector variables
     [SerializeField] private LayerMask ground;
@@ -53,17 +54,22 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if(state == State.climb)
-        {
-            Climb();
-        }
+        
         if (state != State.hurt)
         {
-            Movement();
             Attack();
+            if (state != State.attack)
+            {
+                Movement();
+                Climb();
+            }
         }
+
         AnimationState();
         anim.SetInteger("state", (int)state); // Sets animation based on enumeratror state
+
+
+
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -131,17 +137,16 @@ public class PlayerController : MonoBehaviour
     private void Movement()
     {
         float hDirection = Input.GetAxisRaw("Horizontal");
+        float vDirection = Input.GetAxisRaw("Vertical");
+        
 
-        if(canClimb && Mathf.Abs(Input.GetAxis("Vertical")) > .1f)
+        if (canClimb && Mathf.Abs(Input.GetAxis("Vertical")) > 0.1f)
         {
             state = State.climb;
-            rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
-            transform.position = new Vector3(ladder.transform.position.x, rb.position.y);
-            rb.gravityScale = 0f;
         }
 
         // Moving left
-        if (hDirection < 0)
+        else if (hDirection < 0)
         {
             rb.velocity = new Vector2(-speed, rb.velocity.y);
             transform.localScale = new Vector2(-1, 1);
@@ -210,7 +215,7 @@ public class PlayerController : MonoBehaviour
         else if (state == State.climb)
         {
 
-        }
+        } 
         else if (state == State.jumping)
         {
             if (rb.velocity.y < .1f)
@@ -266,35 +271,46 @@ public class PlayerController : MonoBehaviour
 
     private void Climb()
     {
-        if (Input.GetButtonDown("Jump"))
-        {
-            
-            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
-            canClimb = false;
-            transform.position = new Vector3(ladder.transform.position.x, rb.position.y);
-            rb.gravityScale = naturalGravity;
-            anim.speed = 1f;
-            Jump();
-            return;
-        }
+        RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, Vector2.up, distance, whatIsLadder);
+        float vDirection = Input.GetAxisRaw("Vertical");
+        float hDirection = Input.GetAxisRaw("Horizontal");
 
-
-        float vDirection = Input.GetAxis("Vertical");
-
-        if(vDirection > .1f && !topLadder)
+        if (hitInfo.collider != null)
         {
-            rb.velocity = new Vector2(0f, vDirection * climbSpeed);
-            anim.speed = 1f;
-        }
-        else if (vDirection < -.1f && !bottomLadder)
-        {
-            rb.velocity = new Vector2(0f, vDirection * climbSpeed);
-            anim.speed = 1f;
+
+            if (Mathf.Abs(vDirection) > 0)
+            {
+                canClimb = true;
+            }
         }
         else
         {
-            anim.speed = 0f;
-            rb.velocity = Vector2.zero;
+            if (Mathf.Abs(hDirection)  > 0)
+            {
+                canClimb = false;
+            }
         }
+
+        if (canClimb == true && hitInfo.collider != null)
+        {
+                
+            rb.gravityScale = 0;
+            state = State.climb;
+            if (Mathf.Abs(vDirection) > 0)
+            {
+                rb.velocity = new Vector2(rb.velocity.x, climbSpeed * vDirection);
+                anim.speed = 1f;
+            } else
+            {
+                anim.speed = 0f;
+            }
+                
+        }
+        else
+        {
+                rb.gravityScale = naturalGravity;
+        }
+        
     }
+    
 }

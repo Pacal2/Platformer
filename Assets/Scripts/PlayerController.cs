@@ -23,8 +23,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject attackHitBox;
 
     //Ladder variables
-    [HideInInspector] public bool isClimbing;
-    private float naturalGravity;
+    [SerializeField] private float naturalGravity;
     [SerializeField] float climbSpeed = 3f;
     [SerializeField] LayerMask whatIsLadder;
 
@@ -43,8 +42,9 @@ public class PlayerController : MonoBehaviour
         anim = GetComponent<Animator>();
         coll = GetComponent<Collider2D>();
         attackColl = attackHitBox.GetComponent<Collider2D>();
-        PermanentUI.perm.healthAmount.text = PermanentUI.perm.health.ToString();
         naturalGravity = rb.gravityScale;
+        PermanentUI.perm.healthAmount.text = PermanentUI.perm.health.ToString();
+        
         attackHitBox.SetActive(false);
 
     }
@@ -55,7 +55,7 @@ public class PlayerController : MonoBehaviour
         if (state != State.hurt)
         {
             Attack();
-            if (state != State.attack)
+            if (isAttacking == false)
             {
                 Climb();
                 Movement();
@@ -126,23 +126,18 @@ public class PlayerController : MonoBehaviour
     {
         float hDirection = Input.GetAxisRaw("Horizontal");
         float vDirection = Input.GetAxisRaw("Vertical");
-
-        if (isClimbing && Mathf.Abs(Input.GetAxis("Vertical")) > 0.1f)
-        {
-            state = State.climb;
-        }
-
+        
+        rb.velocity = new Vector2(speed * hDirection, rb.velocity.y);
         // Moving left
+        
         if (hDirection < 0)
         {
-            rb.velocity = new Vector2(-speed, rb.velocity.y);
             transform.localScale = new Vector2(-1, 1);
 
         }
         // Moving right
         else if (hDirection > 0)
         {
-            rb.velocity = new Vector2(speed, rb.velocity.y);
             transform.localScale = new Vector2(1, 1);
            
         }
@@ -154,7 +149,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-
+            
         }
 
     }
@@ -202,7 +197,7 @@ public class PlayerController : MonoBehaviour
         } 
         else if (state == State.jumping)
         {
-            if (rb.velocity.y < .1f)
+            if (rb.velocity.y < 0.1f)
             {
                 state = State.falling;
             }
@@ -222,7 +217,7 @@ public class PlayerController : MonoBehaviour
                 state = State.idle;
             }
         }
-        else if (Mathf.Abs(rb.velocity.x) > 0f)
+        else if (Mathf.Abs(rb.velocity.x) > 0.1f)
         {
             // Moving
             state = State.running;
@@ -255,46 +250,36 @@ public class PlayerController : MonoBehaviour
 
     private void Climb()
     {
-        RaycastHit2D ladder = Physics2D.Raycast(transform.position, Vector2.up, 5, whatIsLadder);
+
+        if (!coll.IsTouchingLayers(LayerMask.GetMask("Ladder"))) {
+            state = State.idle;
+            rb.gravityScale = naturalGravity;
+            anim.speed = 1f;
+            return;
+        }
         
-        float hDirection = Input.GetAxisRaw("Horizontal");
-        float vDirection = Input.GetAxisRaw("Vertical");
+        float vDirection = Input.GetAxis("Vertical");
+        Vector2 climbVelocity = new Vector2(rb.velocity.x, vDirection * climbSpeed);
+        rb.velocity = climbVelocity;
+        rb.gravityScale = 0f;
 
-        if (ladder.collider != null)
+        bool isClimbing = Mathf.Abs(rb.velocity.y) > Mathf.Epsilon;
+        if (isClimbing == true)
         {
-            if (vDirection > 0.1f)
-            {
-                isClimbing = true;
-            }
-        }
-        else
-        {
-            if (hDirection > 0.1f)
-            {
-                isClimbing = false;
-            }        
-        }
-
-        if (isClimbing == true && ladder.collider != null)
-        {
+            state = State.climb;
             
-            rb.gravityScale = 0;
-            rb.velocity = new Vector2(rb.velocity.x, climbSpeed * vDirection);
-            if (Mathf.Abs(vDirection) > 0.1f)
+            if (Mathf.Abs(vDirection) > 0.5f)
             {
                 anim.speed = 1f;
-            }
-            else
+            } else
             {
                 anim.speed = 0f;
             }
-            
-        }
-        else
-        {
-                rb.gravityScale = naturalGravity;
         }
         
+        
+
+
     }
-    
+
 }

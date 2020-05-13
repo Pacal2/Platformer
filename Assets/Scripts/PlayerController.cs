@@ -10,8 +10,10 @@ public class PlayerController : MonoBehaviour
     // Start() variables
     private Rigidbody2D rb;
     private Animator anim;
-    private Collider2D coll;
+    private Collider2D bodyColl;
     private Collider2D attackColl;
+    private Collider2D feetColl;
+
 
 
     // Finite state machine
@@ -19,13 +21,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private State state = State.idle;
 
     //Fighting
-    bool isAttacking = false;
+    [SerializeField] bool isAttacking;
     [SerializeField] GameObject attackHitBox;
+    
 
     //Ladder variables
     [SerializeField] private float naturalGravity;
     [SerializeField] float climbSpeed = 3f;
     [SerializeField] LayerMask whatIsLadder;
+    [SerializeField] bool isClimbing;
 
     // Inspector variables
     [SerializeField] private LayerMask ground;
@@ -35,13 +39,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float hurtForce = 10f;
     [SerializeField] private AudioSource cherry;
     [SerializeField] private AudioSource footstep;
+    [SerializeField] GameObject feetCollider;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
-        coll = GetComponent<Collider2D>();
+        bodyColl = GetComponent<Collider2D>();
         attackColl = attackHitBox.GetComponent<Collider2D>();
+        feetColl = feetCollider.GetComponent<Collider2D>();
         naturalGravity = rb.gravityScale;
         PermanentUI.perm.healthAmount.text = PermanentUI.perm.health.ToString();
         
@@ -55,7 +61,7 @@ public class PlayerController : MonoBehaviour
         if (state != State.hurt)
         {
             Attack();
-            if (isAttacking == false)
+            if (isAttacking == false && state != State.attack)
             {
                 Climb();
                 Movement();
@@ -130,20 +136,20 @@ public class PlayerController : MonoBehaviour
         rb.velocity = new Vector2(speed * hDirection, rb.velocity.y);
         // Moving left
         
-        if (hDirection < 0)
+        if (state != State.climb && hDirection < 0)
         {
             transform.localScale = new Vector2(-1, 1);
 
         }
         // Moving right
-        else if (hDirection > 0)
+        else if (state != State.climb && hDirection > 0)
         {
             transform.localScale = new Vector2(1, 1);
            
         }
         
         // Jumping
-        if (Input.GetButtonDown("Jump") && coll.IsTouchingLayers(ground))
+        if (Input.GetButtonDown("Jump") && feetColl.IsTouchingLayers(ground))
         {
             Jump();
         }
@@ -162,7 +168,7 @@ public class PlayerController : MonoBehaviour
 
     private void Attack()
     {
-        if (Input.GetButtonDown("Fire3") && !isAttacking && coll.IsTouchingLayers(ground))
+        if (Input.GetButtonDown("Fire3") && !isAttacking && feetColl.IsTouchingLayers(ground))
         {
             isAttacking = true;
             state = State.attack;
@@ -205,7 +211,7 @@ public class PlayerController : MonoBehaviour
         }
         else if (state == State.falling)
         {
-            if (coll.IsTouchingLayers(ground))
+            if (feetColl.IsTouchingLayers(ground))
             {
                 state = State.idle;
             }
@@ -224,7 +230,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            if (coll.IsTouchingLayers(ground))
+            if (feetColl.IsTouchingLayers(ground))
             {
                 state = State.idle;
             }
@@ -251,7 +257,7 @@ public class PlayerController : MonoBehaviour
     private void Climb()
     {
 
-        if (!coll.IsTouchingLayers(LayerMask.GetMask("Ladder"))) {
+        if (!feetColl.IsTouchingLayers(LayerMask.GetMask("Ladder"))) {
             state = State.idle;
             rb.gravityScale = naturalGravity;
             anim.speed = 1f;
@@ -263,7 +269,7 @@ public class PlayerController : MonoBehaviour
         rb.velocity = climbVelocity;
         rb.gravityScale = 0f;
 
-        bool isClimbing = Mathf.Abs(rb.velocity.y) > Mathf.Epsilon;
+        isClimbing = Mathf.Abs(vDirection) > 0.1f;
         if (isClimbing == true)
         {
             state = State.climb;

@@ -24,20 +24,16 @@ AnimationClip:
     - time: 0.083333336
       value: {fileID: 21300000, guid: 78ad2d44753269d428f539cb3fa307b2, type: 3}
     - time: 0.16666667
-      value: {fileID: 21300000, guid: 648bdc9fe598b9446a38ea96b24875d8, type: 3}
-    - time: 0.25
       value: {fileID: 21300000, guid: 93066faefff094f42bc115bcb3f42993, type: 3}
-    - time: 0.33333334
+    - time: 0.25
       value: {fileID: 21300000, guid: 367f8068f956d9046acedb52b53e7426, type: 3}
-    - time: 0.41666666
+    - time: 0.33333334
       value: {fileID: 21300000, guid: d8bdb54635e22be4281be042843cff72, type: 3}
-    - time: 0.5
+    - time: 0.41666666
       value: {fileID: 21300000, guid: f44862192a8812243ab2d6ae6680a095, type: 3}
-    - time: 0.5833333
+    - time: 0.5
       value: {fileID: 21300000, guid: ed2bb79ba54a9a6499fb1bc71828660f, type: 3}
-    - time: 0.6666667
-      value: {fileID: 21300000, guid: 5c0f2504e64d1a345bacfa156b27239b, type: 3}
-    - time: 0.73333335
+    - time: 0.56666666
       value: {fileID: 21300000, guid: 5c0f2504e64d1a345bacfa156b27239b, type: 3}
     attribute: m_Sprite
     path: 
@@ -60,20 +56,18 @@ AnimationClip:
     pptrCurveMapping:
     - {fileID: 21300000, guid: 5c0f2504e64d1a345bacfa156b27239b, type: 3}
     - {fileID: 21300000, guid: 78ad2d44753269d428f539cb3fa307b2, type: 3}
-    - {fileID: 21300000, guid: 648bdc9fe598b9446a38ea96b24875d8, type: 3}
     - {fileID: 21300000, guid: 93066faefff094f42bc115bcb3f42993, type: 3}
     - {fileID: 21300000, guid: 367f8068f956d9046acedb52b53e7426, type: 3}
     - {fileID: 21300000, guid: d8bdb54635e22be4281be042843cff72, type: 3}
     - {fileID: 21300000, guid: f44862192a8812243ab2d6ae6680a095, type: 3}
     - {fileID: 21300000, guid: ed2bb79ba54a9a6499fb1bc71828660f, type: 3}
     - {fileID: 21300000, guid: 5c0f2504e64d1a345bacfa156b27239b, type: 3}
-    - {fileID: 21300000, guid: 5c0f2504e64d1a345bacfa156b27239b, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 0.75
+    m_StopTime: 0.5833333
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
@@ -93,21 +87,21 @@ AnimationClip:
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
   m_Events:
-  - time: 0.38333333
+  - time: 0.33333334
     functionName: attackHitboxOn
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.53333336
+  - time: 0.5
     functionName: attackHitboxOff
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.73333335
+  - time: 0.56666666
     functionName: ResetAttack
     data: 
     objectReferenceParameter: {fileID: 0}

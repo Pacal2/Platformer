@@ -89,6 +89,19 @@ public class PlayerController : MonoBehaviour
             GetComponent<SpriteRenderer>().color = Color.yellow;
             StartCoroutine(ResetPower());
         }
+
+        if (collision.gameObject.tag == "Platform")
+        {
+            transform.position = collision.transform.position;
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if(other.gameObject.tag == "Platform")
+        {
+            transform.position = other.transform.position;
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D other)

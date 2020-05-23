@@ -23,7 +23,7 @@ public class PlayerController : MonoBehaviour
     //Fighting
     [SerializeField] bool isAttacking;
     [SerializeField] GameObject attackHitBox;
-    
+    [SerializeField] bool isHurt;
 
     //Ladder variables
     [SerializeField] private float naturalGravity;
@@ -57,18 +57,18 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        
         if (state != State.hurt)
         {
+            Idle();
+            Run();
+            FlipSprite();
+            Jump();
+            Climb();
             Attack();
-            if (isAttacking == false && state != State.attack)
-            {
-                Climb();
-                Movement();
-                
-            }
         }
-        AnimationState();
+
+        Recovery();
+
         anim.SetInteger("state", (int)state); // Sets animation based on enumeratror state
     }
 
@@ -90,19 +90,9 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(ResetPower());
         }
 
-        if (collision.gameObject.tag == "Platform")
-        {
-            transform.position = collision.transform.position;
-        }
+        
     }
 
-    private void OnTriggerStay(Collider other)
-    {
-        if(other.gameObject.tag == "Platform")
-        {
-            transform.position = other.transform.position;
-        }
-    }
 
     private void OnCollisionEnter2D(Collision2D other)
     {
@@ -115,6 +105,7 @@ public class PlayerController : MonoBehaviour
             else
             {
                 state = State.hurt;
+                
                 HandleHealth(); // Dealts with health, updading UI
 
                 if (other.gameObject.transform.position.x > transform.position.x)
@@ -127,6 +118,7 @@ public class PlayerController : MonoBehaviour
                     //Enemy is to my left therefore I should be damaged and move right
                     rb.velocity = new Vector2(hurtForce, rb.velocity.y);
                 }
+
             }
         }
     }
@@ -139,139 +131,12 @@ public class PlayerController : MonoBehaviour
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
-    }
-
-    private void Movement()
-    {
-        float hDirection = Input.GetAxisRaw("Horizontal");
-        float vDirection = Input.GetAxisRaw("Vertical");
-        
-        rb.velocity = new Vector2(speed * hDirection, rb.velocity.y);
-        // Moving left
-        
-        if (state != State.climb && hDirection < 0)
-        {
-            transform.localScale = new Vector2(-1, 1);
-
-        }
-        // Moving right
-        else if (state != State.climb && hDirection > 0)
-        {
-            transform.localScale = new Vector2(1, 1);
-           
-        }
-        
-        // Jumping
-        if (Input.GetButtonDown("Jump") && feetColl.IsTouchingLayers(ground))
-        {
-            Jump();
-        }
-        else
-        {
-            
-        }
-
-    }
-
-    private void Jump()
-    {
-        rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-        state = State.jumping;
-    }
-
-    private void Attack()
-    {
-        if (Input.GetButtonDown("Fire3") && !isAttacking && feetColl.IsTouchingLayers(ground))
-        {
-            isAttacking = true;
-            state = State.attack;
-        }
-    }
-
-    void ResetAttack()
-    {
-        isAttacking = false;
-        state = State.idle;
-    }
-
-    void attackHitboxOn()
-    {
-        attackHitBox.SetActive(true);
-    }
-
-    void attackHitboxOff()
-    {
-        attackHitBox.SetActive(false);
-    }
-    
-    private void AnimationState()
-    {
-        if (state == State.attack)
-        {
-
-        }
-        else if (state == State.climb)
-        {
-
-        } 
-        else if (state == State.jumping)
-        {
-            if (rb.velocity.y < 0.1f)
-            {
-                state = State.falling;
-            }
-
-        }
-        else if (state == State.falling)
-        {
-            if (feetColl.IsTouchingLayers(ground))
-            {
-                state = State.idle;
-            }
-        }
-        else if (state == State.hurt)
-        {
-            if (Mathf.Abs(rb.velocity.x) < .1f)
-            {
-                state = State.idle;
-            }
-        }
-        else if (Mathf.Abs(rb.velocity.x) > 0.1f)
-        {
-            // Moving
-            state = State.running;
-        }
-        else
-        {
-            if (feetColl.IsTouchingLayers(ground))
-            {
-                state = State.idle;
-            }
-            else
-            {
-                state = State.falling;
-            }
-            
-        }
-    }
-
-    private void FootStep()
-    {
-        footstep.Play();
-    }
-
-    private IEnumerator ResetPower()
-    {
-        yield return new WaitForSeconds(10);
-        jumpForce = beginningJumpForce;
-        GetComponent<SpriteRenderer>().color = Color.white;
-    }
+    } 
 
     private void Climb()
     {
 
         if (!feetColl.IsTouchingLayers(LayerMask.GetMask("Ladder"))) {
-            state = State.idle;
             rb.gravityScale = naturalGravity;
             anim.speed = 1f;
             return;
@@ -295,10 +160,114 @@ public class PlayerController : MonoBehaviour
                 anim.speed = 0f;
             }
         }
-        
-        
 
 
+    }
+
+    private void Run()
+    {
+        float hDirection = Input.GetAxisRaw("Horizontal");
+        Vector2 playerVelocity = new Vector2(hDirection * speed, rb.velocity.y);
+        rb.velocity = playerVelocity;
+
+        bool playerHasHorizontalSpeed = Mathf.Abs(rb.velocity.x) > Mathf.Epsilon;
+        if (playerHasHorizontalSpeed)
+        {
+            state = State.running;
+        }
+        
+        
+    }
+
+    private void FlipSprite()
+    {
+        bool playerHasHorizontalSpeed = Mathf.Abs(rb.velocity.x) > Mathf.Epsilon;
+        if (playerHasHorizontalSpeed)
+        {
+            transform.localScale = new Vector2(Mathf.Sign(rb.velocity.x), 1f);
+            
+        }
+    }
+
+
+    private void Jump()
+    {
+        
+        if (Input.GetButtonDown("Jump") && feetColl.IsTouchingLayers(ground))
+        {
+            Vector2 jumpVelocityToAdd = new Vector2(0f, jumpForce);
+            rb.velocity += jumpVelocityToAdd;
+        }
+
+        if (!feetColl.IsTouchingLayers(ground))
+        {
+            if (rb.velocity.y > 0f)
+            {
+                state = State.jumping;
+            }
+            else if (rb.velocity.y < 0f)
+            {
+                state = State.falling;
+            }
+        }
+    }
+
+    private void Idle()
+    {
+        bool playerHasHorizontalSpeed = Mathf.Abs(rb.velocity.x) > Mathf.Epsilon;
+        if (!playerHasHorizontalSpeed && !isAttacking && feetColl.IsTouchingLayers(ground))
+        {
+            state = State.idle;
+        }
+
+    }
+
+    private void Recovery()
+    {
+        if (state == State.hurt)
+        {
+            if (Mathf.Abs(rb.velocity.x) < .5f)
+            {
+                state = State.idle;
+            }
+        }
+    }
+
+    private void Attack()
+    {
+        if (Input.GetButtonDown("Fire3") && !isAttacking && feetColl.IsTouchingLayers(ground))
+        {
+            isAttacking = true;
+            state = State.attack;
+        }
+    }
+
+    void ResetAttack()
+    {
+        isAttacking = false;
+    }
+
+    void attackHitboxOn()
+    {
+        attackHitBox.SetActive(true);
+    }
+
+    void attackHitboxOff()
+    {
+        attackHitBox.SetActive(false);
+    }
+
+
+    private void FootStep()
+    {
+        footstep.Play();
+    }
+
+    private IEnumerator ResetPower()
+    {
+        yield return new WaitForSeconds(10);
+        jumpForce = beginningJumpForce;
+        GetComponent<SpriteRenderer>().color = Color.white;
     }
 
 }

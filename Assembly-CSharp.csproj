@@ -69,6 +69,7 @@
     <Compile Include="Assets\Scripts\Fall.cs" />
     <Compile Include="Assets\Scripts\Frog.cs" />
     <Compile Include="Assets\Scripts\GravityHelper.cs" />
+    <Compile Include="Assets\Scripts\Pendulum.cs" />
     <Compile Include="Assets\Scripts\PermanentUI.cs" />
     <Compile Include="Assets\Scripts\Platform.cs" />
     <Compile Include="Assets\Scripts\PlayerController.cs" />

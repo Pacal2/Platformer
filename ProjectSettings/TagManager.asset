@@ -48,21 +48,24 @@ TagManager:
   - name: Black
     uniqueID: 1613348523
     locked: 0
-  - name: Background
+  - name: 3-Plan
     uniqueID: 2820353019
     locked: 0
-  - name: Background depth
+  - name: 2to3
     uniqueID: 2530744287
     locked: 0
-  - name: Back
+  - name: 2-Plan
     uniqueID: 3340423451
     locked: 0
-  - name: Foreground
-    uniqueID: 2540605811
+  - name: 1to2
+    uniqueID: 1529209581
     locked: 0
-  - name: Front
-    uniqueID: 3084810421
+  - name: 1-Plan
+    uniqueID: 2540605811
     locked: 0
   - name: Entity
     uniqueID: 298103985
+    locked: 0
+  - name: 0-Plan
+    uniqueID: 3084810421
     locked: 0

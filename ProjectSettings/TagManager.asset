@@ -8,6 +8,8 @@ TagManager:
   - Enemy
   - Powerup
   - Platform
+  - Trap
+  - Arrow
   layers:
   - Default
   - TransparentFX

@@ -96,9 +96,9 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.gameObject.tag == "Enemy")
+        if (other.gameObject.tag == "Enemy" || other.gameObject.tag == "Trap" || other.gameObject.tag == "Arrow")
         {
-            if (state == State.attack)
+            if (other.gameObject.tag == "Enemy" && state == State.attack)
             {
                 Enemy enemy = other.gameObject.GetComponent<Enemy>();
             }
@@ -108,15 +108,20 @@ public class PlayerController : MonoBehaviour
                 
                 HandleHealth(); // Dealts with health, updading UI
 
+                if(other.gameObject.tag == "Arrow")
+                {
+                    Destroy(other.gameObject);
+                }
+
                 if (other.gameObject.transform.position.x > transform.position.x)
                 {
                     //Enemy is to my right therefore I should be damaged and move left
-                    rb.velocity = new Vector2(-hurtForce, rb.velocity.y);
+                    rb.velocity = new Vector2(-hurtForce, hurtForce);
                 }
                 else
                 {
                     //Enemy is to my left therefore I should be damaged and move right
-                    rb.velocity = new Vector2(hurtForce, rb.velocity.y);
+                    rb.velocity = new Vector2(hurtForce, hurtForce);
                 }
 
             }

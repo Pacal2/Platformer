@@ -90,6 +90,26 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(ResetPower());
         }
 
+        if (collision.tag == "Attack")
+        {
+            state = State.hurt;
+
+            HandleHealth(); // Dealts with health, updading UI
+
+            
+
+            if (collision.gameObject.transform.position.x > transform.position.x)
+            {
+                //Enemy is to my right therefore I should be damaged and move left
+                rb.velocity = new Vector2(-hurtForce, hurtForce);
+            }
+            else
+            {
+                //Enemy is to my left therefore I should be damaged and move right
+                rb.velocity = new Vector2(hurtForce, hurtForce);
+            }
+        }
+
         
     }
 

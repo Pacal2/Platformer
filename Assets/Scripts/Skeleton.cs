@@ -8,9 +8,18 @@ public class Skeleton : Enemy
 
     float dirX;
     [SerializeField] float moveSpeed = 3f;
+
+
+    [SerializeField] private float leftCap;
+    [SerializeField] private float rightCap;
+
+
+
     private Collider2D coll;
-    bool facingRight = false;
+    bool facingRight = true;
     Vector3 localScale;
+
+
 
 
     // Start is called before the first frame update
@@ -26,18 +35,35 @@ public class Skeleton : Enemy
     // Update is called once per frame
     void Update()
     {
-        if (transform.position.x < -9f)
+        if (transform.position.x < leftCap)
         {
             dirX = 1f;
-        } else if (transform.position.x > 9f)
+        } else if (transform.position.x > rightCap)
         {
             dirX = -1f;
+        }
+
+        if (isAttacking)
+        {
+            anim.SetBool("isAttacking", true);
+            //time = Time.time + attackDelay;
+        }
+        else
+        {
+            anim.SetBool("isAttacking", false);
         }
     }
 
     private void FixedUpdate()
     {
-        rb.velocity = new Vector2(dirX * moveSpeed, rb.velocity.y);
+        if(!isAttacking)
+        {
+            rb.velocity = new Vector2(dirX * moveSpeed, rb.velocity.y);
+
+        } else
+        {
+            rb.velocity = Vector2.zero;
+        }
     }
 
     private void LateUpdate()

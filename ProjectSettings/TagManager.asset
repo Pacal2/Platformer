@@ -10,6 +10,7 @@ TagManager:
   - Platform
   - Trap
   - Arrow
+  - Attack
   layers:
   - Default
   - TransparentFX

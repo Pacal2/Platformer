@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 8165969029397675231}
   - component: {fileID: 8165969029397675230}
   - component: {fileID: 8165969029397675229}
-  - component: {fileID: 365795181}
   - component: {fileID: 4134200336767956578}
   - component: {fileID: 2494887136405036189}
+  - component: {fileID: 3259873902930936412}
   m_Layer: 0
   m_Name: Eagle
   m_TagString: Enemy
@@ -71,7 +71,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 298103985
-  m_SortingLayer: 2
+  m_SortingLayer: 7
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: f240dfd4814d34d55a9b033f3c9d8a60, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -129,18 +129,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.3306046, y: 1.4356303}
   m_EdgeRadius: 0
---- !u!114 &365795181
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8165969029397675225}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2ae8393170b6b4240b35a756ed61fc41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!50 &4134200336767956578
 Rigidbody2D:
   serializedVersion: 4
@@ -258,3 +246,15 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &3259873902930936412
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8165969029397675225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31f62a41929ed66499297bb53e7880d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

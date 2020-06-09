@@ -37,8 +37,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private static float beginningJumpForce = 20f;
     [SerializeField] private float jumpForce = beginningJumpForce;
     [SerializeField] private float hurtForce = 10f;
-    [SerializeField] private AudioSource cherry;
+    [SerializeField] private AudioSource collectKey;
+    [SerializeField] private AudioSource collectLife;
+    [SerializeField] private AudioSource collectHeal;
     [SerializeField] private AudioSource footstep;
+    [SerializeField] private AudioSource HitEnemy;
+    [SerializeField] private AudioSource getHit;
     [SerializeField] GameObject feetCollider;
 
     private void Start()
@@ -49,7 +53,6 @@ public class PlayerController : MonoBehaviour
         attackColl = attackHitBox.GetComponent<Collider2D>();
         feetColl = feetCollider.GetComponent<Collider2D>();
         naturalGravity = rb.gravityScale;
-        PermanentUI.perm.healthAmount.text = PermanentUI.perm.health.ToString();
         
         attackHitBox.SetActive(false);
 
@@ -76,10 +79,17 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.tag == "Collectable")
         {
-            cherry.Play();
+            collectKey.Play();
             Destroy(collision.gameObject);
-            PermanentUI.perm.cherries += 1;
-            PermanentUI.perm.cherryScore.text = PermanentUI.perm.cherries.ToString();
+            PermanentUI.perm.keys += 1;
+            PermanentUI.perm.keyAmount.text = PermanentUI.perm.keys.ToString();
+        }
+
+        if (collision.tag == "Heal")
+        {
+            collectHeal.Play();
+            Destroy(collision.gameObject);
+            PermanentUI.perm.health += 1;
         }
 
         if (collision.tag == "Powerup")
@@ -151,10 +161,9 @@ public class PlayerController : MonoBehaviour
     private void HandleHealth()
     {
         PermanentUI.perm.health -= 1;
-        PermanentUI.perm.healthAmount.text = PermanentUI.perm.health.ToString();
         if (PermanentUI.perm.health <= 0)
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            SceneManager.LoadScene("Start");
         }
     } 
 

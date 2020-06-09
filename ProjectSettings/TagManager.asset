@@ -11,6 +11,7 @@ TagManager:
   - Trap
   - Arrow
   - Attack
+  - Heal
   layers:
   - Default
   - TransparentFX

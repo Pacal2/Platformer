@@ -71,12 +71,15 @@
     <Compile Include="Assets\Scripts\Enemy.cs" />
     <Compile Include="Assets\Scripts\Fall.cs" />
     <Compile Include="Assets\Scripts\Frog.cs" />
+    <Compile Include="Assets\Scripts\GameStarter.cs" />
     <Compile Include="Assets\Scripts\GravityHelper.cs" />
+    <Compile Include="Assets\Scripts\MainMenu.cs" />
     <Compile Include="Assets\Scripts\Pendulum.cs" />
     <Compile Include="Assets\Scripts\PermanentUI.cs" />
     <Compile Include="Assets\Scripts\Platform.cs" />
     <Compile Include="Assets\Scripts\PlayerController.cs" />
     <Compile Include="Assets\Scripts\SceneChange.cs" />
+    <Compile Include="Assets\Scripts\SimpleEnemy.cs" />
     <Compile Include="Assets\Scripts\Skeleton.cs" />
     <Compile Include="Assets\Scripts\Slime.cs" />
     <Compile Include="Assets\Scripts\Statue.cs" />

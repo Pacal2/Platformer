@@ -8,10 +8,15 @@ public class PermanentUI : MonoBehaviour
 {
 
     // Player Stats
-    public int cherries = 0;
+    public int keys = 0;
+    public Image[] hearts;
+    public Sprite fullHeart;
+    public Sprite emptyHeart;
+
     public int health = 5;
-    public TextMeshProUGUI cherryScore;
-    public Text healthAmount;
+    public int numOfHearts;
+
+    public TextMeshProUGUI keyAmount;
 
     public static PermanentUI perm;
 
@@ -33,14 +38,39 @@ public class PermanentUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
+        if (health > numOfHearts)
+        {
+            health = numOfHearts;
+        }
+
+        for (int i = 0; i < hearts.Length; i++)
+        {
+
+            if(i < health)
+            {
+                hearts[i].sprite = fullHeart;
+            }
+            else
+            {
+                hearts[i].sprite = emptyHeart;
+            }
+
+            if (i < numOfHearts)
+            {
+                hearts[i].enabled = true;
+            }
+            else
+            {
+                hearts[i].enabled = false;
+            }
+        }
     }
 
     public void Reset()
     {
-        cherries = 0;
-        cherryScore.text = cherries.ToString();
+        keys = 0;
+        keyAmount.text = keys.ToString();
         health = 5;
-        healthAmount.text = health.ToString();
     }
 }

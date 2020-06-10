@@ -8,6 +8,7 @@ public class Statue : MonoBehaviour
     public float arrowSpeed;
     public float time = 0;
     public float arrowDelay;
+    [SerializeField] private AudioSource explosion;
 
     public bool fromLeft = false;
     public bool shoot;
@@ -29,6 +30,7 @@ public class Statue : MonoBehaviour
             {
                 Arrow arrow = Instantiate(arrowPrefab, transform.position, transform.rotation) as Arrow;
                 arrow.dir = dir2;
+                explosion.Play();
                 if (fromLeft == true)
                 {
                     arrow.transform.rotation = Quaternion.Euler(0, 0, 180);

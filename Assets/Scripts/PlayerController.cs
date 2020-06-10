@@ -38,11 +38,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float jumpForce = beginningJumpForce;
     [SerializeField] private float hurtForce = 10f;
     [SerializeField] private AudioSource collectKey;
-    [SerializeField] private AudioSource collectLife;
     [SerializeField] private AudioSource collectHeal;
     [SerializeField] private AudioSource footstep;
-    [SerializeField] private AudioSource HitEnemy;
-    [SerializeField] private AudioSource getHit;
+    [SerializeField] private AudioSource jumpSound;
+    [SerializeField] private AudioSource swordSwing;
+    [SerializeField] private AudioSource hurtSound;
     [SerializeField] GameObject feetCollider;
 
     private void Start()
@@ -53,7 +53,9 @@ public class PlayerController : MonoBehaviour
         attackColl = attackHitBox.GetComponent<Collider2D>();
         feetColl = feetCollider.GetComponent<Collider2D>();
         naturalGravity = rb.gravityScale;
-        
+        PermanentUI.perm.health = 5;
+
+
         attackHitBox.SetActive(false);
 
     }
@@ -62,13 +64,17 @@ public class PlayerController : MonoBehaviour
     {
         if (state != State.hurt)
         {
-            Idle();
-            Run();
-            FlipSprite();
-            Jump();
-            Climb();
             Attack();
+            if(!isAttacking)
+            {
+                Idle();
+                Run();
+                FlipSprite();
+                Jump();
+                Climb();
+            }
         }
+        
 
         Recovery();
 
@@ -135,7 +141,7 @@ public class PlayerController : MonoBehaviour
             else
             {
                 state = State.hurt;
-                
+                hurtSound.Play();
                 HandleHealth(); // Dealts with health, updading UI
 
                 if(other.gameObject.tag == "Arrow")
@@ -154,6 +160,7 @@ public class PlayerController : MonoBehaviour
                     rb.velocity = new Vector2(hurtForce, hurtForce);
                 }
 
+                
             }
         }
     }
@@ -200,12 +207,12 @@ public class PlayerController : MonoBehaviour
 
     private void Run()
     {
-        float hDirection = Input.GetAxisRaw("Horizontal");
+        float hDirection = Input.GetAxis("Horizontal");
         Vector2 playerVelocity = new Vector2(hDirection * speed, rb.velocity.y);
         rb.velocity = playerVelocity;
 
         bool playerHasHorizontalSpeed = Mathf.Abs(rb.velocity.x) > Mathf.Epsilon;
-        if (playerHasHorizontalSpeed)
+        if (playerHasHorizontalSpeed && Mathf.Abs(hDirection) > Mathf.Epsilon && Mathf.Abs(hDirection) > Mathf.Epsilon)
         {
             state = State.running;
         }
@@ -227,10 +234,11 @@ public class PlayerController : MonoBehaviour
     private void Jump()
     {
         
-        if (Input.GetButtonDown("Jump") && feetColl.IsTouchingLayers(ground))
+        if (Input.GetButtonDown("Jump") && feetColl.IsTouchingLayers(ground) )
         {
             Vector2 jumpVelocityToAdd = new Vector2(0f, jumpForce);
             rb.velocity += jumpVelocityToAdd;
+            jumpSound.Play();
         }
 
         if (!feetColl.IsTouchingLayers(ground))
@@ -254,25 +262,32 @@ public class PlayerController : MonoBehaviour
             state = State.idle;
         }
 
+        if(Input.GetKeyDown(KeyCode.X))
+        {
+            state = State.idle;
+        }
     }
 
     private void Recovery()
     {
         if (state == State.hurt)
         {
-            if (Mathf.Abs(rb.velocity.x) < .5f)
+            isAttacking = false;
+            if (Mathf.Abs(rb.velocity.x) < Mathf.Epsilon)
             {
                 state = State.idle;
+                
             }
         }
     }
 
     private void Attack()
     {
-        if (Input.GetButtonDown("Fire3") && !isAttacking && feetColl.IsTouchingLayers(ground))
+        if (Input.GetButtonDown("Fire3") && !isAttacking && feetColl.IsTouchingLayers(ground) && state != State.running)
         {
             isAttacking = true;
             state = State.attack;
+            
         }
     }
 
@@ -284,6 +299,7 @@ public class PlayerController : MonoBehaviour
     void attackHitboxOn()
     {
         attackHitBox.SetActive(true);
+        swordSwing.Play();
     }
 
     void attackHitboxOff()

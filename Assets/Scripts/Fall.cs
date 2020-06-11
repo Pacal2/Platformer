@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class Fall : MonoBehaviour
 {
-    [SerializeField] private string sceneToLoad;
+    [SerializeField] private Transform respawnPoint;
     
     // Start is called before the first frame update
     void Start()
@@ -23,8 +23,8 @@ public class Fall : MonoBehaviour
     {
         if(collision.gameObject.tag == "Player")
         {
-            PermanentUI.perm.Reset();
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            
+            collision.transform.position = respawnPoint.transform.position;
         }
     }
 }

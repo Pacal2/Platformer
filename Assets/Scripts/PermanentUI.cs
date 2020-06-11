@@ -23,7 +23,7 @@ public class PermanentUI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
         // Singleton
         if (!perm)
         {

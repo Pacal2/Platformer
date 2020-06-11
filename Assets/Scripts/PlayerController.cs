@@ -42,7 +42,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private AudioSource footstep;
     [SerializeField] private AudioSource jumpSound;
     [SerializeField] private AudioSource swordSwing;
-    [SerializeField] private AudioSource hurtSound;
+    [SerializeField] public AudioSource hurtSound;
     [SerializeField] GameObject feetCollider;
 
     private void Start()
@@ -126,7 +126,14 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        
+        if (collision.gameObject.tag == "Fall")
+        {
+            hurtSound.Play();
+            HandleHealth();
+
+        }
+
+
     }
 
 
@@ -163,14 +170,26 @@ public class PlayerController : MonoBehaviour
                 
             }
         }
+
+        if(other.gameObject.tag == "Platform")
+        {
+            this.transform.parent = other.transform;
+        }
     }
 
-    private void HandleHealth()
+    private void OnCollisionExit2D(Collision2D other)
+    {
+        if(other.gameObject.tag == "Platform")
+        {
+            this.transform.parent = null;
+        }    
+    }
+    public void HandleHealth()
     {
         PermanentUI.perm.health -= 1;
         if (PermanentUI.perm.health <= 0)
         {
-            SceneManager.LoadScene("Start");
+            SceneManager.LoadScene("Death");
         }
     } 
 

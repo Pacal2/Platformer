@@ -12,6 +12,7 @@ TagManager:
   - Arrow
   - Attack
   - Heal
+  - Fall
   layers:
   - Default
   - TransparentFX

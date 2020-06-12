@@ -55,7 +55,7 @@ public class PlayerController : MonoBehaviour
         attackColl = attackHitBox.GetComponent<Collider2D>();
         feetColl = feetCollider.GetComponent<Collider2D>();
         naturalGravity = rb.gravityScale;
-        PermanentUI.perm.health = 3;
+        //PermanentUI.perm.health = 3;
         invincible = false;
 
 

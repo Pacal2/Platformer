@@ -9,14 +9,16 @@ public class PermanentUI : MonoBehaviour
 
     // Player Stats
     public int keys = 0;
+    public TextMeshProUGUI keyAmount;
+
     public Image[] hearts;
     public Sprite fullHeart;
     public Sprite emptyHeart;
 
-    public int health = 5;
-    public int numOfHearts;
+    public int health;
+    public int numOfHearts = 3;
 
-    public TextMeshProUGUI keyAmount;
+    
 
     public static PermanentUI perm;
 
@@ -25,6 +27,7 @@ public class PermanentUI : MonoBehaviour
     {
         //DontDestroyOnLoad(gameObject);
         // Singleton
+        
         if (!perm)
         {
             perm = this;
@@ -33,6 +36,7 @@ public class PermanentUI : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        
     }
 
     // Update is called once per frame
@@ -71,6 +75,6 @@ public class PermanentUI : MonoBehaviour
     {
         keys = 0;
         keyAmount.text = keys.ToString();
-        health = 5;
+        health = 3;
     }
 }

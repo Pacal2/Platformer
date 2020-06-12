@@ -44,6 +44,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private AudioSource swordSwing;
     [SerializeField] public AudioSource hurtSound;
     [SerializeField] GameObject feetCollider;
+    [SerializeField] private bool invincible;
+    [SerializeField] private bool isColliding;
 
     private void Start()
     {
@@ -53,7 +55,8 @@ public class PlayerController : MonoBehaviour
         attackColl = attackHitBox.GetComponent<Collider2D>();
         feetColl = feetCollider.GetComponent<Collider2D>();
         naturalGravity = rb.gravityScale;
-        PermanentUI.perm.health = 5;
+        PermanentUI.perm.health = 3;
+        invincible = false;
 
 
         attackHitBox.SetActive(false);
@@ -62,8 +65,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (state != State.hurt)
-        {
+       
             Attack();
             if(!isAttacking)
             {
@@ -73,7 +75,7 @@ public class PlayerController : MonoBehaviour
                 Jump();
                 Climb();
             }
-        }
+        
         
 
         Recovery();
@@ -83,6 +85,10 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+
+        if (isColliding) return;
+        isColliding = true;
+
         if (collision.tag == "Collectable")
         {
             collectKey.Play();
@@ -95,7 +101,8 @@ public class PlayerController : MonoBehaviour
         {
             collectHeal.Play();
             Destroy(collision.gameObject);
-            PermanentUI.perm.health += 1;
+            PermanentUI.perm.numOfHearts += 1;
+            PermanentUI.perm.health = PermanentUI.perm.numOfHearts;
         }
 
         if (collision.tag == "Powerup")
@@ -110,7 +117,7 @@ public class PlayerController : MonoBehaviour
         {
             state = State.hurt;
 
-            HandleHealth(); // Dealts with health, updading UI
+            StartCoroutine(HandleHealth()); // Dealts with health, updading UI
 
             
 
@@ -129,9 +136,11 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.tag == "Fall")
         {
             hurtSound.Play();
-            HandleHealth();
+            StartCoroutine(HandleHealth());
 
         }
+
+        StartCoroutine(Reset());
 
 
     }
@@ -149,9 +158,9 @@ public class PlayerController : MonoBehaviour
             {
                 state = State.hurt;
                 hurtSound.Play();
-                HandleHealth(); // Dealts with health, updading UI
+                StartCoroutine(HandleHealth()); // Dealts with health, updading UI
 
-                if(other.gameObject.tag == "Arrow")
+                if (other.gameObject.tag == "Arrow")
                 {
                     Destroy(other.gameObject);
                 }
@@ -184,13 +193,19 @@ public class PlayerController : MonoBehaviour
             this.transform.parent = null;
         }    
     }
-    public void HandleHealth()
+    IEnumerator HandleHealth()
     {
-        PermanentUI.perm.health -= 1;
-        if (PermanentUI.perm.health <= 0)
+        if (invincible == false)
         {
-            SceneManager.LoadScene("Death");
+            PermanentUI.perm.health -= 1;
+            if (PermanentUI.perm.health <= 0)
+            {
+                SceneManager.LoadScene("Death");
+            }
         }
+        invincible = true;
+        yield return new WaitForSeconds(3f);
+        invincible = false;
     } 
 
     private void Climb()
@@ -198,6 +213,7 @@ public class PlayerController : MonoBehaviour
 
         if (!feetColl.IsTouchingLayers(LayerMask.GetMask("Ladder"))) {
             rb.gravityScale = naturalGravity;
+            
             anim.speed = 1f;
             return;
         }
@@ -206,11 +222,11 @@ public class PlayerController : MonoBehaviour
         Vector2 climbVelocity = new Vector2(rb.velocity.x, vDirection * climbSpeed);
         rb.velocity = climbVelocity;
         rb.gravityScale = 0f;
-
+        state = State.climb;
         isClimbing = Mathf.Abs(vDirection) > 0.1f;
-        if (isClimbing == true)
+        if (feetColl.IsTouchingLayers(LayerMask.GetMask("Ladder")))
         {
-            state = State.climb;
+            
             
             if (Mathf.Abs(vDirection) > 0.5f)
             {
@@ -337,6 +353,12 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(10);
         jumpForce = beginningJumpForce;
         GetComponent<SpriteRenderer>().color = Color.white;
+    }
+
+    IEnumerator Reset()
+    {
+        yield return new WaitForEndOfFrame();
+        isColliding = false;
     }
 
 }

@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class SceneChange : MonoBehaviour
 {
+    [SerializeField] private string sceneName;
     
     // Start is called before the first frame update
     void Start()
@@ -20,9 +21,9 @@ public class SceneChange : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Player" && PermanentUI.perm.keys >= 3)
+        if (collision.gameObject.tag == "Player")
         {
-            SceneManager.LoadScene("TheEnd");
+            SceneManager.LoadScene(sceneName);
         }
     }
 }
